@@ -88,30 +88,30 @@ The C4audit output for the contest can be found [here](add link to report) withi
 
 *Describe any novel or unique curve logic or mathematical models implemented in the contracts*
 
-**C4 staff TODO: fill in scoping form details here for sponsor to confirm or edit**
+*Sponsor, please confirm/edit the information below.*
 
 ## Scoping Details 
 ```
-- If you have a public code repo, please share it here:  
-- How many contracts are in scope?:   
-- Total SLoC for these contracts?:  
-- How many external imports are there?:  
-- How many separate interfaces and struct definitions are there for the contracts within scope?:  
-- Does most of your code generally use composition or inheritance?:   
-- How many external calls?:   
-- What is the overall line coverage percentage provided by your tests?:  
-- Is there a need to understand a separate part of the codebase / get context in order to audit this part of the protocol?:   
-- Please describe required context:   
-- Does it use an oracle?:  
-- Does the token conform to the ERC20 standard?:  
-- Are there any novel or unique curve logic or mathematical models?: 
-- Does it use a timelock function?:  
-- Is it an NFT?: 
-- Does it have an AMM?:   
-- Is it a fork of a popular project?:   
-- Does it use rollups?:   
-- Is it multi-chain?:  
-- Does it use a side-chain?: 
+- If you have a public code repo, please share it here: N/A
+- How many contracts are in scope?: 5
+- Total SLoC for these contracts?: 750 
+- How many external imports are there?: 3
+- How many separate interfaces and struct definitions are there for the contracts within scope?: 4 
+- Does most of your code generally use composition or inheritance?:  Composition
+- How many external calls?: No other protocols
+- What is the overall line coverage percentage provided by your tests?: 90
+- Is there a need to understand a separate part of the codebase / get context in order to audit this part of the protocol?: Yes 
+- Please describe required context:  We are upgrading our existing marketplace with a few improvements, having a general understanding of the parts of the protocol will be helpful. The changes will not be disrupting the core design of the exchange, just adding minor features.
+- Does it use an oracle?: Yes
+- Does the token conform to the ERC20 standard?:  No token
+- Are there any novel or unique curve logic or mathematical models?: No
+- Does it use a timelock function?:  No
+- Is it an NFT?: No
+- Does it have an AMM?: No  
+- Is it a fork of a popular project?: No
+- Does it use rollups?: No 
+- Is it multi-chain?: No 
+- Does it use a side-chain?: No
 ```
 
 # Tests
