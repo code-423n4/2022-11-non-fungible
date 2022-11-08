@@ -48,11 +48,11 @@ Under "SPONSORS ADD INFO HERE" heading below, include the following:
 ---
 
 # Contest 181 contest details
-- Total Prize Pool: $33,500 USDC
+- Total Prize Pool: $36,500 USDC
   - HM awards: $25,500 USDC
   - QA report awards: $3,000 USDC 
   - Gas report awards: $1,500 USDC 
-  - Judge + presort awards: $3,000 USDC 
+  - Judge + presort awards: $6,000 USDC 
   - Scout awards: $500 USDC 
 - Join [C4 Discord](https://discord.gg/code4rena) to register
 - Submit findings [using the C4 form](https://code4rena.com/contests/2022-11-contest-181-contest/submit)
