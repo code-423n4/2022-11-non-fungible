@@ -47,7 +47,7 @@ Under "SPONSORS ADD INFO HERE" heading below, include the following:
 
 ---
 
-# Contest 181 contest details
+# Non Fungible Trading contest details
 - Total Prize Pool: $36,500 USDC
   - HM awards: $25,500 USDC
   - QA report awards: $3,000 USDC 
