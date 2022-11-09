@@ -1,121 +1,136 @@
-# ✨ So you want to sponsor a contest
-
-This `README.md` contains a set of checklists for our contest collaboration.
-
-Your contest will use two repos: 
-- **a _contest_ repo** (this one), which is used for scoping your contest and for providing information to contestants (wardens)
-- **a _findings_ repo**, where issues are submitted (shared with you after the contest) 
-
-Ultimately, when we launch the contest, this contest repo will be made public and will contain the smart contracts to be reviewed and all the information needed for contest participants. The findings repo will be made public after the contest report is published and your team has mitigated the identified issues.
-
-Some of the checklists in this doc are for **C4 (🐺)** and some of them are for **you as the contest sponsor (⭐️)**.
-
----
-
-# Contest setup
-
-# Repo setup
-
-## ⭐️ Sponsor: Add code to this repo
-
-- [ ] Create a PR to this repo with the below changes:
-- [ ] Provide a self-contained repository with working commands that will build (at least) all in-scope contracts, and commands that will run tests producing gas reports for the relevant contracts.
-- [ ] Make sure your code is thoroughly commented using the [NatSpec format](https://docs.soliditylang.org/en/v0.5.10/natspec-format.html#natspec-format).
-- [ ] Please have final versions of contracts and documentation added/updated in this repo **no less than 24 hours prior to contest start time.**
-- [ ] Be prepared for a 🚨code freeze🚨 for the duration of the contest — important because it establishes a level playing field. We want to ensure everyone's looking at the same code, no matter when they look during the contest. (Note: this includes your own repo, since a PR can leak alpha to our wardens!)
-
-
----
-
-## ⭐️ Sponsor: Edit this README
-
-Under "SPONSORS ADD INFO HERE" heading below, include the following:
-
-- [ ] Modify the bottom of this `README.md` file to describe how your code is supposed to work with links to any relevent documentation and any other criteria/details that the C4 Wardens should keep in mind when reviewing. ([Here's a well-constructed example.](https://github.com/code-423n4/2022-08-foundation#readme))
-  - [ ] When linking, please provide all links as full absolute links versus relative links
-  - [ ] All information should be provided in markdown format (HTML does not render on Code4rena.com)
-- [ ] Under the "Scope" heading, provide the name of each contract and:
-  - [ ] source lines of code (excluding blank lines and comments) in each
-  - [ ] external contracts called in each
-  - [ ] libraries used in each
-- [ ] Describe any novel or unique curve logic or mathematical models implemented in the contracts
-- [ ] Does the token conform to the ERC-20 standard? In what specific ways does it differ?
-- [ ] Describe anything else that adds any special logic that makes your approach unique
-- [ ] Identify any areas of specific concern in reviewing the code
-- [ ] Optional / nice to have: pre-record a high-level overview of your protocol (not just specific smart contract functions). This saves wardens a lot of time wading through documentation.
-- [ ] Delete this checklist and all text above the line below when you're ready.
-
----
-
 # Non Fungible Trading contest details
 - Total Prize Pool: $36,500 USDC
   - HM awards: $25,500 USDC
-  - QA report awards: $3,000 USDC 
-  - Gas report awards: $1,500 USDC 
-  - Judge + presort awards: $6,000 USDC 
-  - Scout awards: $500 USDC 
+  - QA report awards: $3,000 USDC
+  - Gas report awards: $1,500 USDC
+  - Judge + presort awards: $6,000 USDC
+  - Scout awards: $500 USDC
 - Join [C4 Discord](https://discord.gg/code4rena) to register
 - Submit findings [using the C4 form](https://code4rena.com/contests/2022-11-contest-181-contest/submit)
 - [Read our guidelines for more details](https://docs.code4rena.com/roles/wardens)
 - Starts November 11, 2022 20:00 UTC
 - Ends November 14, 2022 20:00 UTC
 
-## C4udit / Publicly Known Issues
-
-The C4audit output for the contest can be found [here](add link to report) within an hour of contest opening.
-
-*Note for C4 wardens: Anything included in the C4udit output is considered a publicly known issue and is ineligible for awards.*
-
-[ ⭐️ SPONSORS ADD INFO HERE ]
-
 # Overview
+The Exchange is a single token exchange enabling transfers of ERC721/ERC1155 for ETH/WETH. It uses a ERC1967 proxy pattern and consists of main components (1) [Exchange](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/Exchange.sol), (2) [MatchingPolicy](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/MatchingPolicy.sol), (3) [ExecutionDelegate](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/ExecutionDelegate.sol).
 
-*Please provide some context about the code being audited, and identify any areas of specific concern in reviewing the code. (This is a good place to link to your docs, if you have them.)*
+The base protocol has been already audited, this audit includes the following upgrades:
+  - Add bulk execute function; attempted executions that fail should be bypassed
+  - Implement the `Pool` feature, allowing users to pre-deposit approved funds to be used when a seller takes a bid
+
+### Signature Authentication
+
+#### User Signatures
+The exchange accepts two types of signature authentication determined by a `signatureVersion` parameter - single or bulk. Single listings are authenticated via a signature of the order hash.
+  
+##### Bulk Listing
+To bulk list, the user will produce a merkle tree from the order hashes and sign the root. To verify, the respective merkle path for the order will be packed in `extraSignature`, the merkle root will be reconstructed from the order and merkle path, and the signature will be validated.
+
+
+#### Oracle Signatures
+This feature allows a user to opt-in to require an authorized oracle signature of the order with a recent block number. This enables an off-chain cancellation method where the oracle can continue to provide signatures to potential takers, until the user requests the oracle to stop. After some period of time, the old oracle signatures will expire.
+
+To opt-in, the user has to set the first byte in `extraParams` to 1. In order to fulfill the order, the oracle signature has to be packed in `extraSignature` and the `blockNumber` set to what was signed by the oracle.
+
+
+### Order matching - [PolicyManager](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/PolicyManager.sol)
+In order to maintain flexibility with the types of orders and methods of matching that the exchange is able to execute, the order matching logic is separated to a set of whitelisted matching policies. The responsibility of each policy is to assert the criteria for a valid match are met and return the parameters for proper execution -
+  - `price` - matching price
+  - `tokenId` - NFT token id to transfer
+  - `amount` - (for erc1155) amount of the token to transfer
+  - `assetType` - `ERC721` or `ERC1155`
+
+
+### Transfer approvals - [ExecutionDelegate](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/ExecutionDelegate.sol)
+Ultimately, token approval is only needed for calling transfer functions on `ERC721`, `ERC1155`, or `ERC20`. The `ExecutionDelegate` is a shared transfer proxy that can only call these transfer functions. There are additional safety features to ensure the proxy approval cannot be used maliciously.
+
+#### Safety features
+  - The calling contract must be approved on the `ExecutionDelegate`
+  - Users have the ability to revoke approval from the `ExecutionDelegate` without having to individually calling every token contract.
+
+
+### Cancellations
+**On-chain methods**
+  - `cancelOrder(Order order)` - must be called from `trader`; records order hash in `cancelledOrFilled` mapping that's checked when validating orders
+  - `cancelOrders(Order[] orders)` - must be called from `trader`; calls `cancelOrder` for each order
+  - `incrementNonce()` - increments the nonce of the `msg.sender`; all orders signed with the previous nonce are invalid
+
+**Off-chain methods**
+  - Oracle cancellations - if the order is signed with an `expirationTime` of 0, a user can request an oracle to stop producing authorization signatures; without a recent signature, the order will not be able to be matched
+
+## Smart Contracts
+### Exchange.sol
+Core exchange contract responsible for coordinating the matching of orders and execution of the transfers.
+
+It calls 4 external contracts
+  - `PolicyManager`
+  - `ExecutionDelegate`
+  - Matching Policy
+  - `Pool`
+
+It uses 1 library
+  - `MerkleVerifier`
+
+It inherits the following contracts
+
+#### EIP712.sol (134 sloc)
+Contract containing all EIP712 compliant order hashing functions
+
+#### ERC1967Proxy.sol (12 sloc)
+Standard ERC1967 Proxy implementation
+
+#### OrderStructs.sol (32 sloc)
+Contains all necessary structs and enums for the Exchange
+
+#### ReentrancyGuarded.sol (10 sloc)
+Modifier for reentrancy protection
+
+#### MerkleVerifier.sol (38 sloc)
+Library for Merkle tree computations
+
+### Pool.sol (51 sloc)
+The pool allows user to predeposit ETH so that it can be used when a seller takes their bid. It uses an ERC1967 proxy pattern and only the exchange contract is permitted to make transfers.
+
+### ExecutionDelegate.sol (64 sloc)
+Approved proxy to execute ERC721, ERC1155, and ERC20 transfers
+
+Includes safety functions to allow for easy management of approvals by users
+
+It calls 3 external contract interfaces
+  - ERC721
+  - ERC20
+  - ERC1155
+
+#### PolicyManager.sol (42 sloc)
+Contract reponsible for maintaining a whitelist for matching policies
+
+#### StandardPolicyERC721.sol (55 sloc)
+Matching policy for standard fixed price sale of an ERC721 token
+
 
 # Scope
+All the contracts in this section are to be reviewed. Any contracts not in this list are to be ignored for this contest.
 
-*List all files in scope in the table below -- and feel free to add notes here to emphasize areas of focus.*
-
+## Files in scope
 | Contract | SLOC | Purpose | Libraries used |  
 | ----------- | ----------- | ----------- | ----------- |
-| contracts/folder/sample.sol | 123 | This contract does XYZ | [`@openzeppelin/*`](<(https://openzeppelin.com/contracts/)>) |
+| contracts/Exchange.sol | 437 | Core exchange contract responsible for coordinating the matching of orders and execution of the transfers. | [`@openzeppelin/*`](<(https://openzeppelin.com/contracts/)>) |
+| contracts/Pool.sol | 437 | The pool allows user to predeposit ETH so that it can be used when a seller takes their bid. | |
 
-## Out of scope
+## Out of Scope
+  - `ExecutionDelegate.sol`
+  - `PolicyManager.sol`
+  - `StandardPolicyERC721.sol`
 
-*List any files/contracts that are out of scope for this audit.*
 
-# Additional Context
+# Development Documentation
+Node version v16
 
-*Describe any novel or unique curve logic or mathematical models implemented in the contracts*
+- Setup - `yarn setup`
+- Install packages - `yarn`
+- Compile contracts - `yarn compile`
+- Test coverage - `yarn coverage`
+- Run tests - `yarn test`
 
-*Sponsor, please confirm/edit the information below.*
-
-## Scoping Details 
-```
-- If you have a public code repo, please share it here: N/A
-- How many contracts are in scope?: 5
-- Total SLoC for these contracts?: 750 
-- How many external imports are there?: 3
-- How many separate interfaces and struct definitions are there for the contracts within scope?: 4 
-- Does most of your code generally use composition or inheritance?:  Composition
-- How many external calls?: No other protocols
-- What is the overall line coverage percentage provided by your tests?: 90
-- Is there a need to understand a separate part of the codebase / get context in order to audit this part of the protocol?: Yes 
-- Please describe required context:  We are upgrading our existing marketplace with a few improvements, having a general understanding of the parts of the protocol will be helpful. The changes will not be disrupting the core design of the exchange, just adding minor features.
-- Does it use an oracle?: Yes
-- Does the token conform to the ERC20 standard?:  No token
-- Are there any novel or unique curve logic or mathematical models?: No
-- Does it use a timelock function?:  No
-- Is it an NFT?: No
-- Does it have an AMM?: No  
-- Is it a fork of a popular project?: No
-- Does it use rollups?: No 
-- Is it multi-chain?: No 
-- Does it use a side-chain?: No
-```
-
-# Tests
-
-*Provide every step required to build the project from a fresh git clone, as well as steps to run the tests with a gas report.* 
-
-*Note: Many wardens run Slither as a first pass for testing.  Please document any known errors with no workaround.* 
+Or use this all-in-one build command to run the tests
+```rm -Rf 2022-11-non-fungible || true && git clone https://github.com/code-423n4/2022-11-non-fungible.git && cd 2022-11-non-fungible && yarn setup && nvm install 16.0 && yarn && yarn compile && REPORT_GAS=true yarn test```
