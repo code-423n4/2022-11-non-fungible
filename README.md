@@ -6,7 +6,7 @@
   - Judge + presort awards: $6,000 USDC
   - Scout awards: $500 USDC
 - Join [C4 Discord](https://discord.gg/code4rena) to register
-- Submit findings [using the C4 form](https://code4rena.com/contests/2022-11-contest-181-contest/submit)
+- Submit findings [using the C4 form](https://code4rena.com/contests/2022-11-non-fungible-trading-contest/submit)
 - [Read our guidelines for more details](https://docs.code4rena.com/roles/wardens)
 - Starts November 11, 2022 20:00 UTC
 - Ends November 14, 2022 20:00 UTC
