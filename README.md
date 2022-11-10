@@ -17,6 +17,14 @@ The Exchange is a single token exchange enabling transfers of ERC721/ERC1155 for
 The base protocol has been already audited, this audit includes the following upgrades:
   - Add bulk execute function; attempted executions that fail should be bypassed
   - Implement the `Pool` feature, allowing users to pre-deposit approved funds to be used when a seller takes a bid
+The previous version of `Exchange.sol` is included in the repo as well as `Exchange_old.sol` for reference.
+
+Although the protocol can be called and used by anyone, we maintain the main orderbook for valid orders.
+
+The domain version is intentionally not updated as there is no major change to the matching logic, thus all current orders should remain valid.
+
+### Execution
+Order matching can be executed by any party as long as valid signatures are included. There is an `execute` method for single orders and a `bulkExecute` method for multiple orders. This method of implementation requires a public `_execute` method which should not be called directly, it should only be called from `execute` and `bulkExecute`. There is a protective modifier `internalCall` which checks an `isInternal` parameter set by `execute` and `bulkExecute`. Additionally, the two execution methods set `remainingETH` at the beginning of the call to properly track the amount of ETH sent in the transaction as it gets used to fill orders.
 
 ### Signature Authentication
 
@@ -25,7 +33,6 @@ The exchange accepts two types of signature authentication determined by a `sign
   
 ##### Bulk Listing
 To bulk list, the user will produce a merkle tree from the order hashes and sign the root. To verify, the respective merkle path for the order will be packed in `extraSignature`, the merkle root will be reconstructed from the order and merkle path, and the signature will be validated.
-
 
 #### Oracle Signatures
 This feature allows a user to opt-in to require an authorized oracle signature of the order with a recent block number. This enables an off-chain cancellation method where the oracle can continue to provide signatures to potential takers, until the user requests the oracle to stop. After some period of time, the old oracle signatures will expire.
@@ -47,7 +54,6 @@ Ultimately, token approval is only needed for calling transfer functions on `ERC
 #### Safety features
   - The calling contract must be approved on the `ExecutionDelegate`
   - Users have the ability to revoke approval from the `ExecutionDelegate` without having to individually calling every token contract.
-
 
 ### Cancellations
 **On-chain methods**
@@ -91,7 +97,7 @@ Library for Merkle tree computations
 ### Pool.sol (51 sloc)
 The pool allows user to predeposit ETH so that it can be used when a seller takes their bid. It uses an ERC1967 proxy pattern and only the exchange contract is permitted to make transfers.
 
-### ExecutionDelegate.sol (64 sloc)
+### ExecutionDelegate.sol
 Approved proxy to execute ERC721, ERC1155, and ERC20 transfers
 
 Includes safety functions to allow for easy management of approvals by users
@@ -101,10 +107,10 @@ It calls 3 external contract interfaces
   - ERC20
   - ERC1155
 
-#### PolicyManager.sol (42 sloc)
-Contract reponsible for maintaining a whitelist for matching policies
+#### PolicyManager.sol
+Contract responsible for maintaining a whitelist for matching policies
 
-#### StandardPolicyERC721.sol (55 sloc)
+#### StandardPolicyERC721.sol
 Matching policy for standard fixed price sale of an ERC721 token
 
 
@@ -118,9 +124,12 @@ All the contracts in this section are to be reviewed. Any contracts not in this 
 | contracts/Pool.sol | 437 | The pool allows user to predeposit ETH so that it can be used when a seller takes their bid. | |
 
 ## Out of Scope
+  - `Exchange_old.sol` (for reference as the current implementation)
   - `ExecutionDelegate.sol`
   - `PolicyManager.sol`
   - `StandardPolicyERC721.sol`
+  - `lib/*`
+  - `interfaces/*`
 
 
 # Development Documentation

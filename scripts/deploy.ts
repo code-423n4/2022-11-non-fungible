@@ -154,7 +154,7 @@ export async function upgrade(
 
 task('deploy-pool', 'Deploy Pool').setAction(async () => {
   await deployPool();
-  updateAddresses(['Pool']);
+  updateAddresses(['Pool', 'PoolImpl']);
 });
 
 task('deploy-matching-policy', 'Deploy MatchingPolicy')

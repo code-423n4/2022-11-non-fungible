@@ -1,11 +1,16 @@
+import hre from 'hardhat';
 import { expect } from 'chai';
-import { Wallet, Contract, BigNumber } from 'ethers';
+import { ethers, Wallet, Contract, BigNumber } from 'ethers';
 import { waitForTx } from '../web3-utils';
 
 import { eth, Order } from './exchange';
 import { Side, ZERO_ADDRESS } from './exchange/utils';
 
 import type { CheckBalances, GenerateOrder } from './exchange';
+
+async function setBalance(address: string, value: string) {
+  await hre.network.provider.send('hardhat_setBalance', [address, value]);
+}
 
 export function runExecuteTests(setupTest: any) {
   return async () => {
@@ -210,6 +215,7 @@ export function runExecuteTests(setupTest: any) {
           expectedFeeRecipientBalancePool = feeRecipientBalancePool.add(fee);
         });
       });
+
       it('should revert with ERC20 not WETH', async () => {
         sell.parameters.paymentToken = mockERC721.address;
         buy.parameters.paymentToken = mockERC721.address;
@@ -220,6 +226,12 @@ export function runExecuteTests(setupTest: any) {
           'Invalid payment token',
         );
       });
+      it('should revert if _execute is called externally', async () => {
+        await expect(exchange._execute(sellInput, buyInput)).to.be.revertedWith(
+          'This function should not be called directly',
+        );
+      });
+
       describe('buyer is taker', () => {
         beforeEach(async () => {
           exchange = exchange.connect(bob);
@@ -574,6 +586,50 @@ export function runExecuteTests(setupTest: any) {
             .connect(bob)
             .bulkExecute(executions, { value: value.sub(1) }),
         );
+      });
+    });
+
+    describe('pool', () => {
+      beforeEach(async () => {
+        await updateBalances();
+      });
+      it("can't call transferFrom", async () => {
+        await expect(
+          pool.connect(alice).transferFrom(bob.address, alice.address, 1)
+        ).to.be.reverted;
+      });
+      it('can deposit', async () => {
+        await waitForTx(pool.connect(alice).deposit({ value: '1' }));
+        expect(await pool.balanceOf(alice.address)).to.be.equal(aliceBalancePool.add(1));
+        await waitForTx(alice.sendTransaction({
+          to: pool.address,
+          value: '0x1',
+        }));
+        expect(await pool.balanceOf(alice.address)).to.be.equal(aliceBalancePool.add(2));
+      });
+      it('can withdraw', async () => {
+        const tx = await waitForTx(pool.connect(alice).withdraw('1'));
+        const gasFee = tx.gasUsed.mul(tx.effectiveGasPrice);
+        expect(await pool.balanceOf(alice.address)).to.be.equal(aliceBalancePool.sub(1));
+        expect(await alice.getBalance()).to.be.equal(aliceBalance.add(1).sub(gasFee));
+      });
+      it("can't transfer more than balance", async () => {
+        await hre.network.provider.request({
+          method: 'hardhat_impersonateAccount',
+          params: [exchange.address],
+        });
+        await setBalance(exchange.address, '0xfffffffffffffffffffffffffffffffffffffff');
+        const signer = await hre.ethers.getSigner(exchange.address);
+        await expect(
+          pool.connect(signer).transferFrom(bob.address, alice.address, aliceBalancePool.add(1))
+        ).to.be.reverted;
+      });
+      it("can't transfer to zero address", async () => {
+        await setBalance(exchange.address, '0xfffffffffffffffffffffffffffffffffffffff');
+        const signer = await hre.ethers.getImpersonatedSigner(exchange.address);
+        await expect(
+          pool.connect(signer).transferFrom(bob.address, ZERO_ADDRESS, 1)
+        ).to.be.reverted;
       });
     });
   };

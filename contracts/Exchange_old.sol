@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "hardhat/console.sol";
-
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
@@ -11,7 +9,6 @@ import "./lib/ReentrancyGuarded.sol";
 import "./lib/EIP712.sol";
 import "./lib/MerkleVerifier.sol";
 import "./interfaces/IExchange.sol";
-import "./interfaces/IPool.sol";
 import "./interfaces/IExecutionDelegate.sol";
 import "./interfaces/IPolicyManager.sol";
 import "./interfaces/IMatchingPolicy.sol";
@@ -21,34 +18,20 @@ import {
   AssetType,
   Fee,
   Order,
-  Input,
-  Execution
+  Input
 } from "./lib/OrderStructs.sol";
 
 /**
- * @title Exchange
+ * @title Exchange (old version)
  * @dev Core exchange contract
  */
-contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, UUPSUpgradeable {
+contract Exchange_old is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, UUPSUpgradeable {
 
     /* Auth */
     uint256 public isOpen;
 
     modifier whenOpen() {
         require(isOpen == 1, "Closed");
-        _;
-    }
-
-    modifier setupExecution() {
-        remainingETH = msg.value;
-        isInternal = true;
-        _;
-        remainingETH = 0;
-        isInternal = false;
-    }
-
-    modifier internalCall() {
-        require(isInternal, "This function should not be called directly");
         _;
     }
 
@@ -73,7 +56,6 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
     string public constant VERSION = "1.0";
     uint256 public constant INVERSE_BASIS_POINT = 10_000;
     address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-    address public constant POOL = 0xA79A24Bf5b62AF621de261E8ECcbC650DFB6d524;
 
 
     /* Variables */
@@ -133,122 +115,30 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
         blockRange = _blockRange;
     }
 
-    // temporary function for testing
-    function updateDomainSeparator() external {
-        DOMAIN_SEPARATOR = _hashDomain(EIP712Domain({
-            name              : NAME,
-            version           : VERSION,
-            chainId           : block.chainid,
-            verifyingContract : address(this)
-        }));
-    }
-
 
     /* External Functions */
-    bool public isInternal = false;
-    uint256 public remainingETH = 0;
 
     /**
-     * @dev _execute wrapper 
+     * @dev Match two orders, ensuring validity of the match, and execute all associated state transitions. Protected against reentrancy by a contract-global lock.
      * @param sell Sell input
      * @param buy Buy input
      */
     function execute(Input calldata sell, Input calldata buy)
         external
         payable
-        whenOpen
-        setupExecution
-    {
-        _execute(sell, buy);
-        _returnDust();
-    }
-
-    /**
-     * @dev Bulk execute multiple matches
-     * @param executions Potential buy/sell matches
-     */
-    function bulkExecute(Execution[] calldata executions)
-        external
-        payable
-        whenOpen
-        setupExecution
-    {
-        /*
-        REFERENCE
-        uint256 executionsLength = executions.length;
-        for (uint8 i=0; i < executionsLength; i++) {
-            bytes memory data = abi.encodeWithSelector(this._execute.selector, executions[i].sell, executions[i].buy);
-            (bool success,) = address(this).delegatecall(data);
-        }
-        _returnDust(remainingETH);
-        */
-        uint256 executionsLength = executions.length;
-        for (uint8 i = 0; i < executionsLength; i++) {
-            assembly {
-                let memPointer := mload(0x40)
-
-                let order_location := calldataload(add(executions.offset, mul(i, 0x20)))
-                let order_pointer := add(executions.offset, order_location)
-
-                let size
-                switch eq(add(i, 0x01), executionsLength)
-                case 1 {
-                    size := sub(calldatasize(), order_pointer)
-                }
-                default {
-                    let next_order_location := calldataload(add(executions.offset, mul(add(i, 0x01), 0x20)))
-                    let next_order_pointer := add(executions.offset, next_order_location)
-                    size := sub(next_order_pointer, order_pointer)
-                }
-
-                mstore(memPointer, 0xe04d94ae00000000000000000000000000000000000000000000000000000000) // _execute
-                calldatacopy(add(0x04, memPointer), order_pointer, size)
-                // must be put in separate transaction to bypass failed executions
-                // must be put in delegatecall to maintain the authorization from the caller
-                let result := delegatecall(gas(), address(), memPointer, add(size, 0x04), 0, 0)
-            }
-        }
-        _returnDust();
-    }
-
-    function _returnDust() private {
-        uint256 _remainingETH = remainingETH;
-        assembly {
-            if gt(_remainingETH, 0) {
-                let callStatus := call(
-                    gas(),
-                    caller(),
-                    selfbalance(),
-                    0,
-                    0,
-                    0,
-                    0
-                )
-            }
-        }
-    }
-
-    /**
-     * @dev Match two orders, ensuring validity of the match, and execute all associated state transitions. Protected against reentrancy by a contract-global lock. Must be called internally.
-     * @param sell Sell input
-     * @param buy Buy input
-     */
-    function _execute(Input calldata sell, Input calldata buy)
-        public
-        payable
         reentrancyGuard
-        internalCall
+        whenOpen
     {
         require(sell.order.side == Side.Sell);
 
         bytes32 sellHash = _hashOrder(sell.order, nonces[sell.order.trader]);
         bytes32 buyHash = _hashOrder(buy.order, nonces[buy.order.trader]);
 
-        require(_validateSignatures(sell, sellHash), "Sell failed authorization");
-        require(_validateSignatures(buy, buyHash), "Buy failed authorization");
-
         require(_validateOrderParameters(sell.order, sellHash), "Sell has invalid parameters");
         require(_validateOrderParameters(buy.order, buyHash), "Buy has invalid parameters");
+
+        require(_validateSignatures(sell, sellHash), "Sell failed authorization");
+        require(_validateSignatures(buy, buyHash), "Buy failed authorization");
 
         (uint256 price, uint256 tokenId, uint256 amount, AssetType assetType) = _canMatchOrders(sell.order, buy.order);
 
@@ -280,8 +170,6 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
             buy.order,
             buyHash
         );
-
-        // return (price);
     }
 
     /**
@@ -294,11 +182,13 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
 
         bytes32 hash = _hashOrder(order, nonces[order.trader]);
 
-        require(!cancelledOrFilled[hash], "Order already cancelled or filled");
+        require(cancelledOrFilled[hash] == false, "Order already cancelled or filled");
 
-        /* Mark order as cancelled, preventing it from being matched. */
-        cancelledOrFilled[hash] = true;
-        emit OrderCancelled(hash);
+        if (!cancelledOrFilled[hash]) {
+            /* Mark order as cancelled, preventing it from being matched. */
+            cancelledOrFilled[hash] = true;
+            emit OrderCancelled(hash);
+        }
     }
 
     /**
@@ -374,11 +264,23 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
             /* Order must have a trader. */
             (order.trader != address(0)) &&
             /* Order must not be cancelled or filled. */
-            (!cancelledOrFilled[orderHash]) &&
+            (cancelledOrFilled[orderHash] == false) &&
             /* Order must be settleable. */
-            (order.listingTime < block.timestamp) &&
-            (block.timestamp < order.expirationTime)
+            _canSettleOrder(order.listingTime, order.expirationTime)
         );
+    }
+
+    /**
+     * @dev Check if the order can be settled at the current timestamp
+     * @param listingTime order listing time
+     * @param expirationTime order expiration time
+     */
+    function _canSettleOrder(uint256 listingTime, uint256 expirationTime)
+        view
+        internal
+        returns (bool)
+    {
+        return (listingTime < block.timestamp) && (expirationTime == 0 || block.timestamp < expirationTime);
     }
 
     /**
@@ -411,7 +313,7 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
             return false;
         }
 
-        if (order.order.extraParams.length > 0 && order.order.extraParams[0] == 0x01) {
+        if (order.order.expirationTime == 0) {
             /* Check oracle authorization. */
             require(block.number - order.blockNumber < blockRange, "Signed block number out of range");
             if (
@@ -480,28 +382,11 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
 
         uint8 v; bytes32 r; bytes32 s;
         if (signatureVersion == SignatureVersion.Single) {
-            assembly {
-                v := calldataload(extraSignature.offset)
-                r := calldataload(add(extraSignature.offset, 0x20))
-                s := calldataload(add(extraSignature.offset, 0x40))
-            }
-            /*
-            REFERENCE
             (v, r, s) = abi.decode(extraSignature, (uint8, bytes32, bytes32));
-            */
         } else if (signatureVersion == SignatureVersion.Bulk) {
             /* If the signature was a bulk listing the merkle path must be unpacked before the oracle signature. */
-            assembly {
-                v := calldataload(add(extraSignature.offset, 0x20))
-                r := calldataload(add(extraSignature.offset, 0x40))
-                s := calldataload(add(extraSignature.offset, 0x60))
-            }
-            /*
-            REFERENCE
-            uint8 _v, bytes32 _r, bytes32 _s;
             (bytes32[] memory merklePath, uint8 _v, bytes32 _r, bytes32 _s) = abi.decode(extraSignature, (bytes32[], uint8, bytes32, bytes32));
             v = _v; r = _r; s = _s;
-            */
         }
 
         return _verify(oracle, oracleHash, v, r, s);
@@ -571,9 +456,10 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
         Fee[] calldata fees,
         uint256 price
     ) internal {
-        if (msg.sender == buyer && paymentToken == address(0)) {
-            require(remainingETH >= price);
-            remainingETH -= price;
+        if (paymentToken == address(0) && msg.sender == buyer) {
+            require(msg.value == price, "Message value doesn't equal matching price");
+        } else {
+            require(msg.value == 0, "ETH should not be sent");
         }
 
         /* Take fee. */
@@ -632,10 +518,6 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
             require(to != address(0), "Transfer to zero address");
             (bool success,) = payable(to).call{value: amount}("");
             require(success, "ETH transfer failed");
-        } else if (paymentToken == POOL) {
-            /* Transfer Pool funds. */
-            bool success = IPool(POOL).transferFrom(from, to, amount);
-            require(success, "Pool transfer failed");
         } else if (paymentToken == WETH) {
             /* Transfer funds in WETH. */
             executionDelegate.transferERC20(WETH, from, to, amount);
@@ -660,11 +542,30 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
         uint256 amount,
         AssetType assetType
     ) internal {
+        /* Assert collection exists. */
+        require(_exists(collection), "Collection does not exist");
+
         /* Call execution delegate. */
         if (assetType == AssetType.ERC721) {
             executionDelegate.transferERC721(collection, from, to, tokenId);
         } else if (assetType == AssetType.ERC1155) {
             executionDelegate.transferERC1155(collection, from, to, tokenId, amount);
         }
+    }
+
+    /**
+     * @dev Determine if the given address exists
+     * @param what address to check
+     */
+    function _exists(address what)
+        internal
+        view
+        returns (bool)
+    {
+        uint size;
+        assembly {
+            size := extcodesize(what)
+        }
+        return size > 0;
     }
 }

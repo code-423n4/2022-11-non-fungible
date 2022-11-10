@@ -1,34 +1,45 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract Pool is OwnableUpgradeable, UUPSUpgradeable {
+import "./interfaces/IPool.sol";
+
+/**
+ * @title Pool
+ * @dev ETH pool; funds can only be transferred by Exchange or Swap
+ */
+contract Pool is IPool, OwnableUpgradeable, UUPSUpgradeable {
     // required by the OZ UUPS module
     function _authorizeUpgrade(address) internal override onlyOwner {}
-
-    constructor() {
-      _disableInitializers();
-    }
 
     address private constant EXCHANGE = 0x000000000000Ad05Ccc4F10045630fb830B95127;
     address private constant SWAP = 0x39da41747a83aeE658334415666f3EF92DD0D541;
 
+    mapping(address => uint256) private _balances;
+
     event Transfer(address indexed from, address indexed to, uint256 amount);
 
-    mapping(address => uint256) private _balances;
-    mapping(address => mapping(address => uint256)) public allowance;
-
-    fallback() external payable {
+    /**
+     * @dev receive deposit function
+     */
+    receive() external payable {
         deposit();
     }
+
+    /**
+     * @dev deposit ETH into pool
+     */
     function deposit() public payable {
         _balances[msg.sender] += msg.value;
         emit Transfer(msg.sender, address(0), msg.value);
     }
 
+    /**
+     * @dev withdraw ETH from pool
+     * @param amount Amount to withdraw
+     */
     function withdraw(uint256 amount) public {
         require(_balances[msg.sender] >= amount);
         _balances[msg.sender] -= amount;
@@ -37,20 +48,18 @@ contract Pool is OwnableUpgradeable, UUPSUpgradeable {
         emit Transfer(address(0), msg.sender, amount);
     }
 
-    function balanceOf(address user) public view returns (uint256) {
-        return _balances[user];
-    }
-
-    function totalSupply() public view returns (uint256) {
-        return address(this).balance;
-    }
-
+    /**
+     * @dev transferFrom Transfer balances within pool; only callable by Swap and Exchange
+     * @param from Pool fund sender
+     * @param to Pool fund recipient
+     * @param amount Amount to transfer
+     */
     function transferFrom(address from, address to, uint256 amount)
         public
         returns (bool)
     {
         if (msg.sender != EXCHANGE && msg.sender != SWAP) {
-            revert('Caller is not authorized');
+            revert('Caller is not authorized to transfer');
         }
         _transfer(from, to, amount);
 
@@ -59,9 +68,18 @@ contract Pool is OwnableUpgradeable, UUPSUpgradeable {
 
     function _transfer(address from, address to, uint256 amount) private {
         require(_balances[from] >= amount);
+        require(to != address(0));
         _balances[from] -= amount;
         _balances[to] += amount;
 
         emit Transfer(from, to, amount);
+    }
+
+    function balanceOf(address user) public view returns (uint256) {
+        return _balances[user];
+    }
+
+    function totalSupply() public view returns (uint256) {
+        return address(this).balance;
     }
 }

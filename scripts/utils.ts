@@ -13,6 +13,8 @@ const contracts = {
   PolicyManager: 'POLICY_MANAGER',
   StandardPolicyERC721: 'STANDARD_POLICY_ERC721',
   MerkleVerifier: 'MERKLE_VERIFIER',
+  Pool: 'POOL',
+  PoolImpl: 'POOL_IMPL',
 };
 
 export function getAddress(
