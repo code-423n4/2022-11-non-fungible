@@ -1,0 +1,10 @@
+{
+    "detectors_to_exclude": "",
+    "solc_disable_warnings": false,
+    "filter_paths": "node_modules|contracts/mocks|contracts/lib|contracts/ExecutionDelegate.sol|contracts/matchingPolicies|contracts/PolicyManager.sol|contracts/test",
+    "exclude_informational": false,
+    "exclude_low": false,
+    "exclude_medium": false,
+    "exclude_high": false,
+    "disable_color": false
+  }
