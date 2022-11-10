@@ -11,6 +11,12 @@
 - Starts November 11, 2022 20:00 UTC
 - Ends November 14, 2022 20:00 UTC
 
+## C4udit / Publicly Known Issues
+
+The C4audit output for the contest can be found [here](add link to report) within an hour of contest opening.
+
+*Note for C4 wardens: Anything included in the C4udit output is considered a publicly known issue and is ineligible for awards.*
+
 # Overview
 The Exchange is a single token exchange enabling transfers of ERC721/ERC1155 for ETH/WETH. It uses a ERC1967 proxy pattern and consists of main components (1) [Exchange](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/Exchange.sol), (2) [MatchingPolicy](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/MatchingPolicy.sol), (3) [ExecutionDelegate](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/ExecutionDelegate.sol).
 
