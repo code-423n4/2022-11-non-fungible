@@ -141,5 +141,8 @@ Node version v16
 - Test coverage - `yarn coverage`
 - Run tests - `yarn test`
 
-Or use this all-in-one build command to run the tests
-```rm -Rf 2022-11-non-fungible || true && git clone https://github.com/code-423n4/2022-11-non-fungible.git && cd 2022-11-non-fungible && yarn setup && nvm install 16.0 && yarn && yarn compile && REPORT_GAS=true yarn test```
+Or use these builds command to run the tests
+```rm -Rf 2022-11-non-fungible || true && git clone https://github.com/code-423n4/2022-11-non-fungible.git && cd 2022-11-non-fungible && yarn setup```
+Add an `INFURA_API_KEY` to `.env`
+Finally, run
+```nvm install 16.0 && yarn && yarn compile && REPORT_GAS=true yarn test```
