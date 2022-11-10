@@ -7,7 +7,7 @@ import {
   publicMutableMethods,
 } from './exchange';
 import { getContract } from '../scripts/utils';
-import { upgrade, deployPool } from '../scripts/deploy';
+import { deployFull, deployPool } from '../scripts/deploy';
 
 async function setBalance(address: string, value: string) {
   await hre.network.provider.send('hardhat_setBalance', [address, value]);
@@ -28,40 +28,14 @@ export async function setupExchangeUpgrade({
       },
     ],
   });
-  const pool = await deployPool();
-  const exchange = await getContract('Exchange', 'mainnet');
-  const merkleVerifier = await getContract('MerkleVerifier', 'mainnet');
-  const policyManager = await getContract('PolicyManager', 'mainnet');
-  const ownerAddress = await exchange.owner();
-  await hre.network.provider.request({
-    method: 'hardhat_impersonateAccount',
-    params: [ownerAddress],
-  });
-  const executionDelegate = await getContract('ExecutionDelegate', 'mainnet');
-  const owner = await hre.ethers.getSigner(ownerAddress);
-  await setBalance(owner.address, '0xfffffffffffffffffffffffffffffffffffffff');
-  await waitForTx(exchange.connect(owner).setOracle(admin.address));
-  await waitForTx(exchange.connect(owner).setBlockRange(10));
-  const [signer] = await hre.ethers.getSigners();
-  await setBalance(signer.address, '0xfffffffffffffffffffffffffffffffffffffff');
+  const result = await deployFull(admin.address, 5, 'TestExchange');
 
-  const { exchange: upgradedExchange } = await upgrade(
-    exchange.connect(owner),
-    executionDelegate.address,
-    merkleVerifier.address,
-    'TestExchange',
-  );
+  const pool = await deployPool();
+
   return {
-    admin: owner,
+    ...result,
+    admin,
     oracle: admin,
-    exchange: upgradedExchange,
-    matchingPolicies: {
-      StandardPolicyERC721: await getContract(
-        'StandardPolicyERC721',
-        'mainnet',
-      ),
-    },
-    executionDelegate,
     pool,
   };
 }

@@ -14,8 +14,9 @@ contract Pool is IPool, OwnableUpgradeable, UUPSUpgradeable {
     // required by the OZ UUPS module
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
-    address private constant EXCHANGE = 0x000000000000Ad05Ccc4F10045630fb830B95127;
-    address private constant SWAP = 0x39da41747a83aeE658334415666f3EF92DD0D541;
+    address private constant EXCHANGE = 0x05Bcb37a32487ad70416E872967Bb6aAC5BAb20C;
+    // TODO: set proper address before deployment
+    address private constant SWAP = 0x05Bcb37a32487ad70416E872967Bb6aAC5BAb20C;
 
     mapping(address => uint256) private _balances;
 
