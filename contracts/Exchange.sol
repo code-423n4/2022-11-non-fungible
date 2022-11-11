@@ -73,7 +73,7 @@ contract Exchange is IExchange, ReentrancyGuarded, EIP712, OwnableUpgradeable, U
     string public constant VERSION = "1.0";
     uint256 public constant INVERSE_BASIS_POINT = 10_000;
     address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-    address public constant POOL = 0x6a6E1B57fBcE24BEaaF2afd21600c916d72166f1;
+    address public constant POOL = 0xF66CfDf074D2FFD6A4037be3A669Ed04380Aef2B;
 
 
     /* Variables */
