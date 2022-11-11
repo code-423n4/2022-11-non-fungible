@@ -12,7 +12,7 @@
 - Ends November 14, 2022 20:00 UTC
 
 # Overview
-The Exchange is a single token exchange enabling transfers of ERC721/ERC1155 for ETH/WETH. It uses a ERC1967 proxy pattern and consists of main components (1) [Exchange](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/Exchange.sol), (2) [MatchingPolicy](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/MatchingPolicy.sol), (3) [ExecutionDelegate](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/ExecutionDelegate.sol).
+The Exchange is a single token exchange enabling transfers of ERC721/ERC1155 for ETH/WETH. It uses a ERC1967 proxy pattern and consists of main components (1) [Exchange](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/Exchange.sol), (2) [MatchingPolicy](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/PolicyManager.sol), (3) [ExecutionDelegate](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/ExecutionDelegate.sol).
 
 The base protocol has been already audited, this audit includes the following upgrades:
   - Add bulk execute function; attempted executions that fail should be bypassed

@@ -26,11 +26,6 @@ if (!mnemonic) {
   throw new Error('Please set your MNEMONIC in a .env file');
 }
 
-const deployerMnemonic: string | undefined = process.env.DEPLOYER_MNEMONIC;
-if (!deployerMnemonic) {
-  throw new Error('Please set your DEPLOYER_MNEMONIC in a .env file');
-}
-
 const infuraApiKey: string | undefined = process.env.INFURA_API_KEY;
 if (!infuraApiKey) {
   throw new Error('Please set your INFURA_API_KEY in a .env file');
@@ -41,7 +36,7 @@ function getChainConfig(network: keyof typeof chainIds): NetworkUserConfig {
   return {
     accounts: {
       count: 10,
-      mnemonic: deployerMnemonic,
+      mnemonic,
       path: "m/44'/60'/0'/0",
     },
     chainId: chainIds[network],
