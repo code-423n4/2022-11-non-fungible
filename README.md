@@ -151,6 +151,6 @@ Or use these builds command to run the tests
 
 - ```rm -Rf 2022-11-non-fungible || true && git clone https://github.com/code-423n4/2022-11-non-fungible.git && cd 2022-11-non-fungible && yarn setup```
 
-- Add an `INFURA_API_KEY` to `.env`
+- Only add an `INFURA_API_KEY` to `.env`. Do not edit the rest.
 
 - ```nvm install 16.0 && yarn && yarn compile && REPORT_GAS=true yarn test```
