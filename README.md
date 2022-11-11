@@ -53,6 +53,10 @@ In order to maintain flexibility with the types of orders and methods of matchin
   - `amount` - (for erc1155) amount of the token to transfer
   - `assetType` - `ERC721` or `ERC1155`
 
+Currently, we only support standard orders for ERC721 tokens. But have plans for additional order types including collection bids.
+
+Note: we are aware that determining the maker/taker order is able to manipulated by changing the listing time. However, we don't believe there are vulnerabilities associated with this and will ensure non are presented in future matching policies.
+
 
 ### Transfer approvals - [ExecutionDelegate](https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/ExecutionDelegate.sol)
 Ultimately, token approval is only needed for calling transfer functions on `ERC721`, `ERC1155`, or `ERC20`. The `ExecutionDelegate` is a shared transfer proxy that can only call these transfer functions. There are additional safety features to ensure the proxy approval cannot be used maliciously.
