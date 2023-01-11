@@ -1,4 +1,4 @@
-# Non Fungible Trading contest details
+# Blur contest details
 - Total Prize Pool: $36,500 USDC
   - HM awards: $25,500 USDC
   - QA report awards: $3,000 USDC
