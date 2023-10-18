@@ -1,0 +1,492 @@
+==============================================================
+Guild: Code4rena
+Channel: ARCHIVE-Q4-2022 / non-fungible-nov11
+==============================================================
+
+[11/10/2022 14:22] itsmetechjay (pinned)
+👋 Hello and welcome to the contest channel for the $36,500 USDC **Non Fungible Trading** contest!
+
+📆 Contest opens Friday, 11 November 2022 20:00 and runs through Monday, 14 November 2022 20:00 (20:00 UTC) (3 days).
+
+Please give a warm welcome to the Non Fungible Trading team, particularly @contest-anon, who will be available for questions either here in the channel or via DM.
+
+We'll be posting relevant links, documentation, etc. here, so if you intend to participate in this contest, consider enabling notifications for this channel. 🐺 ⏰
+
+Contest Page: https://code4rena.com/contests/2022-11-non-fungible-trading-contest
+
+{Embed}
+https://code4rena.com/contests/2022-11-non-fungible-trading-contest
+Code4rena Non Fungible Trading contest
+$36,500 USDC
+11 November 2022—14 November 2022
+Code4rena - ARCHIVE-Q4-2022 - non-fungible-nov11 [1040269185403600906].txt_Files/C4-banner-7C19B.png
+
+{Reactions}
+🔥 (6) 
+
+[11/10/2022 18:47] kartoonjoy
+Pinned a message.
+
+
+[11/11/2022 20:15] contest-anon#6759
+Hey everyone, I'll be available to answer any questions that you have while reviewing, feel free to ping me in here or in dms!
+
+
+[11/11/2022 20:19] thepicodes (pinned)
+**Automated report: **https://gist.github.com/Picodes/b6a69e8605531f4ce59b00009b73e68b
+
+
+[11/11/2022 20:20] kartoonjoy (pinned)
+Wardens, please note that c4udit output has been posted above and added to pinned posts. These are considered publicly known issues and are not eligible for awards.
+
+Automated findings: https://gist.github.com/Picodes/b6a69e8605531f4ce59b00009b73e68b
+
+This will also be linked in the contest README file shortly.
+
+{Embed}
+https://gist.github.com/Picodes/b6a69e8605531f4ce59b00009b73e68b
+4naly3er-2022-11-non-fungible.md
+GitHub Gist: instantly share code, notes, and snippets.
+Code4rena - ARCHIVE-Q4-2022 - non-fungible-nov11 [1040269185403600906].txt_Files/gist-og-image-17482.png
+
+
+[11/11/2022 20:20] kartoonjoy
+Pinned a message.
+
+
+[11/11/2022 20:20] kartoonjoy
+Pinned a message.
+
+
+[11/11/2022 20:24] aphak5010
+Hey, for me there is no "Submit Finding" button displayed on the contest page. Is this intended and will be displayed later?
+
+{Reactions}
+👀 
+
+[11/11/2022 21:00] kartoonjoy
+Thanks for the heads-up. This should be resolved momentarily.
+
+{Reactions}
+👍 
+
+[11/11/2022 22:03] adriro
+Hi everyone! Is this a fork of the blur exchange? or it this a common pattern between nft exchanges? the architecture and code looks pretty similar
+
+{Reactions}
+☝️ (2) 
+
+[11/11/2022 23:51] rotcivegaf
+I sent a DM
+
+
+[11/12/2022 01:27] chaduke3730
+Both files are marked with SLOC 437. but I think pool.sol is smaller
+
+
+[11/12/2022 01:30] neko_nyaa
+~~you just lost a QA issue~~
+
+{Reactions}
+😂 (3) 
+
+[11/12/2022 04:07] chaduke3730
+oops
+
+
+[11/12/2022 15:01] aviggiano
+hi there, will send you a DM
+
+
+[11/12/2022 15:11] aviggiano
+I messaged @Jay | C4 since your DMs are blocked
+
+
+[11/12/2022 15:33] adriro
+@contest-anon sent you a dm
+
+
+[11/12/2022 21:12] koolexc
+Who I can DM for a question?
+
+
+[11/12/2022 21:48] contest-anon#6759
+Dm me
+
+
+[11/12/2022 21:50] koolexc
+When I run npm test, all tests are failing.  although I added infura API key. anything I'm missing maybe?
+
+{Reactions}
+same 🤔 
+
+[11/12/2022 21:50] koolexc
+Thanks. will do so.
+
+
+[11/12/2022 22:04] koolexc
+@contest-anon any hint or suggestion?
+
+
+[11/12/2022 22:14] koolexc
+I get this:
+Error: Expected `isActivatedEIP` to only be called with 2930 or 1559
+
+
+[11/12/2022 22:20] koolexc
+issue resolved. I deleted node_modules and re-install it again. all good. thanks!
+
+{Reactions}
+👍 
+
+[11/13/2022 09:47] koolexc
+Heyy @contest-anon , DMed for a question
+
+
+[11/13/2022 09:49] dravee
+Going through the instructions with yarn should be fine though. There are projects that really fail if npm/yarn is used instead of the other intended one 😅
+Happy to hear it's running ok now though 👍
+
+
+[11/13/2022 09:51] koolexc
+That's true. I've had a similar case. due to the resolutions that works a bit differently in npm than yarn . Thank you 🙂
+
+{Reactions}
+hi5 
+
+[11/13/2022 11:25] Franfran#5067
+:ohno:
+
+{Attachments}
+Code4rena - ARCHIVE-Q4-2022 - non-fungible-nov11 [1040269185403600906].txt_Files/image-648EC.png
+
+{Reactions}
+ohno 
+
+[11/13/2022 11:32] illilli000
+it's listed in the known issues page https://gist.github.com/Picodes/b6a69e8605531f4ce59b00009b73e68b
+
+{Reactions}
+👍 😂 
+
+[11/13/2022 11:32] Franfran#5067
+was trolling
+
+
+[11/13/2022 11:33] illilli000
+ok, but keep in mind: https://discord.com/channels/810916927919620096/810929015509483554/1030614403311226990 the sponsors may not be following every contest, and may not know what you're referencing
+
+{Reactions}
+☝️ (2) 
+
+[11/13/2022 14:49] trust90
+Anyone from the team available for DM?
+
+
+[11/13/2022 15:25] ballx0
+known issues are stopping spam reporters like me
+
+{Reactions}
+👍 
+
+[11/14/2022 05:37] philogy
+Who is expected to call the `bulkExecute` method? Users who are a participant in every transaction or will there be some server who also does that? Will they pay the ETH or how is that intended to work
+
+
+[11/14/2022 08:31] saksham#7993
+Any sponsor available for a DM?
+
+
+[11/14/2022 16:18] contest-anon#6759
+Technically, it is possible for anyone to call the bulkExecute method with the proper signatures, although if it's not the buyer, then the payment method couldn't be ETH
+
+
+[11/14/2022 16:18] contest-anon#6759
+You can dm me
+
+
+[11/14/2022 20:02] C4
+**🚨 CONTEST ALERT**
+
+@🐺wardens  The **Non Fungible Trading** contest is now closed! Huge thanks to everyone who participated 🔍, whether you submitted a finding or not.
+
+What's next: The sponsor team and judge will review the findings over the next couple of weeks. Keep an eye on #📢announcements for regular updates on how the contest is progressing through awarding 🤑🏆, judging 🧑‍⚖️ and reporting 📜. Feel free to ping a gardener if you have questions along the way!
+
+{Reactions}
+4739_Skeletor (10) 
+
+[11/14/2022 20:03] sathish9098kumar
+Hi how I know my findings accepted or not
+
+
+[11/14/2022 20:09] rotcivegaf
+wait 😄
+
+
+[11/14/2022 22:47] aviggiano
+Wait about 2-4 weeks and they'll post it on discord
+
+{Reactions}
+😂 
+
+[11/14/2022 22:49] ladboy233
+maybe longer....
+
+
+[11/14/2022 22:49] ladboy233
+😢
+
+
+[11/14/2022 22:49] ladboy233
+but it will come out eventually
+
+
+[11/15/2022 15:37] wizdomchike#2848
+Thanks
+
+
+[11/15/2022 16:21] eyexploit
+do we get any update on mail about the contest, like about any vulnerability that approved??
+
+
+[11/15/2022 17:06] aviggiano
+No, you need to wait for the full report, 4weeks+ it seems
+
+{Reactions}
+😬 
+
+[11/15/2022 19:50] lukejohn_
+Hopefully by the end of the year
+
+
+[11/15/2022 19:50] lukejohn_
+a gift for the christmas if we are lukcy
+
+
+[11/15/2022 20:38] wardog94
+Why does it take so long?
+
+
+[11/15/2022 21:37] korkuthan.shm
+Hi
+
+
+[11/15/2022 22:08] chaduke3730
+@WarDog94reviewing/judging/compiling all the reports take some time, I suppose.
+
+
+[11/15/2022 22:09] chaduke3730
+This is more than grading a homework, since the judges do not know the answer either and they need to read the code to
+
+
+[11/15/2022 22:10] chaduke3730
+and be a good judge case-by-case (so many submissions to review as well)
+
+{Reactions}
+💯 (6) ☝️ (4) 
+
+[11/17/2022 00:02] 0x4non
+I also get anxious, but it's really difficult to judge and compile all submission
+
+{Reactions}
+👍 (3) 
+
+[11/17/2022 09:18] bach4433
+hi all
+
+
+[12/06/2022 23:42] adriro
+it all makes sense now lol
+
+{Reactions}
+pepe_brain (2) 
+
+[12/06/2022 23:47] 0xdeadbeef0x
+What do you mean?
+
+
+[12/07/2022 11:42] adriro
+This contest was an exact copy of the blur code with a couple of modifications. It turns out that they did an stealth audit under a fantasy name. https://twitter.com/code4rena/status/1600241973075775488
+
+{Embed}
+Code4rena (@code4rena)
+https://twitter.com/code4rena/status/1600241973075775488
+@GalloDaSballo @Scott_eth C4 performed a second stealth audit a couple weeks ago for @blur_io under the name Non-Fungible Trading. https://t.co/SssuoNJYO5
+Twitter
+
+
+[12/07/2022 11:49] trust90
+Now I feel like being part of a social experiment 😂
+
+{Reactions}
+😂 (4) empathy (2) 
+
+[12/07/2022 12:40] indijanc7
+Any conclusions they made out of that? Was it worth it? 🙂
+
+
+[12/07/2022 14:25] cloudellie
+You got stealth'd
+
+{Reactions}
+🥷 (2) 
+
+[12/07/2022 14:30] alextheentreprenerd
+It's a reputational risk if our work is used as promotional material but the report is not out, so I've recomended C4 to change the TOS in such a way that if a sponsor writes about the contest results, we are free to share the contest findings (else the info asymmetry can be used to mislead)
+
+{Reactions}
+👍 (6) 
+
+[12/07/2022 17:35] itsmetechjay
+🤑 🎉 Awards for **Non Fungible Trading**:
+
+$6,809.63 USDC » @Trust 
+$3,805.59 USDC » @cccz 
+$1,193.90 USDC » @0xSmartContract 
+$1,083.72 USDC » @adriro 
+$1,083.72 USDC » @wait 
+$1,016.92 USDC » @bin2chen 
+$1,016.92 USDC » @Philogy 
+$1,016.92 USDC » @hihen 
+$920.83 USDC » @IllIllI 
+$796.16 USDC » @0xdeadbeef0x 
+$679.23 USDC » V_B (@Barichek, @Vlad B | zkSync)
+$614.97 USDC » @0xladboy | Sparkware 
+$612.43 USDC » @KingNFT 
+$612.43 USDC » @Roman 
+$612.43 USDC » @Koolex 
+$596.26 USDC » @joestakey 
+$572.42 USDC » @9svR6w 
+$551.67 USDC » @Rolezn 
+$548.16 USDC » @0xhacksmithh 
+$548.16 USDC » @Josiah 
+$527.83 USDC » @zaskoh 
+$508.80 USDC » @ReyAdmirado 
+$505.61 USDC » @deliriusz 
+$471.30 USDC » @Deleted User 
+$457.83 USDC » @Rotcivegaf 
+$447.04 USDC » @neko_nyaaaaaaaaaaaaaaaaaaaaaaaaa 
+$404.49 USDC » @fs0c 
+$306.21 USDC » @datapunk 
+$131.57 USDC » @anon 
+$109.36 USDC » @brgltd 
+$89.02 USDC » @aviggiano 
+$89.02 USDC » @carlitox477 
+$89.02 USDC » @saian 
+$66.81 USDC » @chaduke 
+$66.81 USDC » @codexploder 
+$66.81 USDC » @s3cunDa 
+$66.81 USDC » @corerouter 
+$64.77 USDC » @RaymondFam 
+$64.77 USDC » @martin11 
+$64.77 USDC » @trustminimised 
+$64.77 USDC » @code-cipher 
+$64.77 USDC » @c3phas 
+$55.62 USDC » @ajtra 
+$42.55 USDC » @HE1M 
+$42.55 USDC » @chrisdior4 
+$42.55 USDC » @Tricko 
+$42.55 USDC » @tnevler 
+$42.55 USDC » @0xNazgul 
+$22.22 USDC » @Bnke 
+$22.22 USDC » @0xab00 
+$22.22 USDC » @Aphak5010 
+$22.22 USDC » @EricTee 
+$22.22 USDC » @cryptostellar5 
+$22.22 USDC » @shark 
+$22.22 USDC » @Rahoz 
+$22.22 USDC » @Diana 
+$22.22 USDC » @Awesome 
+$22.22 USDC » @ch0bu 
+$22.22 USDC » @Sathish9098 
+$22.22 USDC » @0xRoxas 
+$22.22 USDC » @lukris02 
+$22.22 USDC » @Deivitto 
+
+🏁 Findings summary
+---------------------------
+High risk findings: 13 total, 1 unique
+Med risk findings: 38 total, 4 unique
+Gas findings: 29
+QA findings: 21 
+
+Awards will be distributed on Polygon within the next 1-2 weeks. Congratulations all! 💸 💸 💸 
+
+***Note: If you participated in this contest and don’t see your name on this list, please wait until the report is published and the findings repo is made public to check on your submissions.***
+
+{Reactions}
+🎉 (7) 🍺 (2) 👑 (2) 
+
+[12/07/2022 17:41] ladboy233
+👀
+
+{Reactions}
+👀 (3) 
+
+[12/07/2022 18:24] koolexc
+My third contest first award 😃
+
+{Reactions}
+🎉 (8) hi5 (6) 
+
+[12/07/2022 19:14] cloudellie
+Hey, congrats!
+
+
+[12/07/2022 20:50] koolexc
+Thank you. I am happy to contribute 💚
+
+{Reactions}
+hi5 (2) 
+
+[12/07/2022 21:08] 0xdeadbeef0x
+Congrats! Also my first results since joining!
+
+{Reactions}
+🎉 (8) nice (3) 
+
+[12/07/2022 21:47] koolexc
+Congrats 🎉
+
+
+[12/08/2022 03:14] sathish9098kumar
+Hi when repo link posted?
+
+
+[12/08/2022 03:15] sathish9098kumar
+Yes very happy for my first result
+
+
+[12/11/2022 23:44] adriro
+I'm curious how M-03 correctly assumed this was an update to blur 🤔
+
+
+[12/12/2022 00:00] 0xdeadbeef0x
+They had an old version of the same file in the same repo: https://github.com/code-423n4/2022-11-non-fungible/blob/main/contracts/Exchange_old.sol
+
+{Reactions}
+💡 
+
+[12/15/2022 17:01] sathish9098kumar
+awards distributed  ?
+
+
+[12/15/2022 17:11] 0xdeadbeef0x
+Yes
+
+
+[12/16/2022 15:32] anonnp
+https://code4rena.com/reports/2022-11-non-fungible/#h-01-direct-theft-of-buyers-eth-funds
+The link when you click [M-01] is pointing to some issue from another contest
+
+{Embed}
+https://code4rena.com/reports/2022-11-non-fungible/
+Non Fungible Trading contest
+Hack DeFi. Compete. Get paid.
+
+{Reactions}
+👀 (2) ✅ thankyou 
+
+==============================================================
+Exported 77 message(s)
+==============================================================
